@@ -161,72 +161,39 @@ class _CustomAnnotationViewState extends State<CustomAnnotationView> {
     // Calculate how much to scale the content to fit within the widget's bounds
     final scaleFactor = 1.0 / widget._heightPercentage;
 
-    return RawGestureDetector(
-      behavior: HitTestBehavior.translucent,
-      gestures: {
-        // Custom single-finger pan (drag) recognizer for moving annotation
-        SingleFingerPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-            SingleFingerPanGestureRecognizer>(
-          () => SingleFingerPanGestureRecognizer(),
-          (SingleFingerPanGestureRecognizer instance) {
-            instance
-              ..onUpdate = (DragUpdateDetails details) {
-                if (widget._canEdit)
-                  widget.onAnnotationMoving
-                      ?.call(widget.annotation, details.delta);
-              }
-              ..onEnd = (DragEndDetails details) {
-                if (widget._canEdit)
-                  widget.onAnnotationMoved
-                      ?.call(widget.annotation, Offset.zero);
+    return Transform.scale(
+      scale: scaleFactor,
+      child: RawGestureDetector(
+        behavior: HitTestBehavior.translucent,
+        gestures: {
+          TapGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+            () => TapGestureRecognizer(),
+            (TapGestureRecognizer instance) {
+              instance.onTap = () {
+                if (widget.onTap != null) {
+                  widget.onTap!();
+                } else if (widget.annotation.onTap != null) {
+                  widget.annotation.onTap!();
+                }
               };
-          },
-        ),
-        TapGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
-          () => TapGestureRecognizer(),
-          (TapGestureRecognizer instance) {
-            instance.onTap = () {
-              if (widget.onTap != null) {
-                widget.onTap!();
-              } else if (widget.annotation.onTap != null) {
-                widget.annotation.onTap!();
-              }
-            };
-          },
-        ),
-        DoubleTapGestureRecognizer:
-            GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
-          () => DoubleTapGestureRecognizer(),
-          (DoubleTapGestureRecognizer instance) {
-            instance.onDoubleTap = () {
-              if (widget.onDoubleTap != null) {
-                widget.onDoubleTap!();
-              } else if (widget.annotation.onDoubleTap != null) {
-                widget.annotation.onDoubleTap!();
-              }
-            };
-          },
-        ),
-      },
-      child: ClipRect(
-        child: DecoratedBox(
-          decoration: widget.isSelected
-              ? BoxDecoration(
-                  border: Border.all(
-                    color: widget.selectorColor,
-                    width: widget.selectorStorkeWidth,
-                  ),
-                  borderRadius: BorderRadius.circular(4.0),
-                )
-              : const BoxDecoration(),
-          child: FittedBox(
-            child: Transform.scale(
-              scale: scaleFactor,
-              child: widget.annotation.customWidget,
-            ),
+            },
           ),
-        ),
+          DoubleTapGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
+            () => DoubleTapGestureRecognizer(),
+            (DoubleTapGestureRecognizer instance) {
+              instance.onDoubleTap = () {
+                if (widget.onDoubleTap != null) {
+                  widget.onDoubleTap!();
+                } else if (widget.annotation.onDoubleTap != null) {
+                  widget.annotation.onDoubleTap!();
+                }
+              };
+            },
+          ),
+        },
+        child: widget.annotation.customWidget,
       ),
     );
   }
