@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../pdfviewer.dart';
 import '../control/enums.dart';
 import 'annotation.dart';
 import 'annotation_view.dart';
@@ -46,6 +47,8 @@ class PdfStickyNoteAnnotationSettings extends PdfAnnotationAppearanceSetting {
   PdfStickyNoteIcon icon = PdfStickyNoteIcon.comment;
 }
 
+class PdfCustomAnnotationSettings extends PdfAnnotationAppearanceSetting {}
+
 /// Represents the settings that allows to customize the default appearance and behavior of annotations.
 class PdfAnnotationSettings extends PdfBaseAnnotationSettings {
   /// Gets or sets a value that indicates the default author name for all annotations in the PDF.
@@ -72,6 +75,8 @@ class PdfAnnotationSettings extends PdfBaseAnnotationSettings {
     ..color = Colors.yellow
     ..icon = PdfStickyNoteIcon.comment;
 
+  PdfCustomAnnotationSettings customAnnotation = PdfCustomAnnotationSettings();
+
   /// Gets or sets the default settings for the annotation selector.
   PdfAnnotationSelectorSettings selector = PdfAnnotationSelectorSettings();
 }
@@ -92,6 +97,8 @@ extension AnnotationSettingsExtension on PdfAnnotationSettings {
       isTypeLocked = squiggly.isLocked;
     } else if (annotation is StickyNoteAnnotation) {
       isTypeLocked = stickyNote.isLocked;
+    } else if (annotation is CustomAnnotation) {
+      isTypeLocked = customAnnotation.isLocked;
     }
 
     return !isLocked && !isTypeLocked && !annotation.isLocked;

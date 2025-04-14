@@ -166,6 +166,8 @@ class _AnnotationContainerState extends State<AnnotationContainer> {
       return widget.annotationSettings.squiggly;
     } else if (annotation is StickyNoteAnnotation) {
       return widget.annotationSettings.stickyNote;
+    } else if (annotation is CustomAnnotation) {
+      return widget.annotationSettings.customAnnotation;
     } else {
       throw ArgumentError.value(
         annotation,
