@@ -225,6 +225,7 @@ class _AnnotationContainerState extends State<AnnotationContainer> {
         annotation: annotation,
         isSelected: annotation == _selectedAnnotation,
         heightPercentage: widget.heightPercentage,
+        zoomLevel: widget.zoomLevel,
         selectorColor: _isLocked(annotation)
             ? widget.annotationSettings.selector.lockedColor
             : widget.annotationSettings.selector.color,

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ class CustomAnnotation extends Annotation {
     required Widget customWidget,
     required Offset position,
     Size size = const Size(50, 50),
+    this.canScale = false,
     this.onTap,
     this.onDoubleTap,
   }) {
@@ -31,6 +33,8 @@ class CustomAnnotation extends Annotation {
 
   /// Called when the annotation is double-tapped.
   final VoidCallback? onDoubleTap;
+
+  final bool canScale;
 
   /// Gets or sets the custom widget of the [CustomAnnotation].
   Widget get customWidget => _customWidget!;
@@ -96,7 +100,7 @@ extension CustomAnnotationExtension on CustomAnnotation {
 
   /// Sets the widget of the [CustomAnnotation].
   void setWidget(Widget widget) {
-    this.customWidget = widget;
+    customWidget = widget;
     notifyChange();
   }
 }
@@ -116,9 +120,11 @@ class CustomAnnotationView extends StatefulWidget with AnnotationView {
     this.selectorColor = defaultSelectorColor,
     this.selectorStorkeWidth = 1,
     double heightPercentage = 1,
+    double zoomLevel = 1,
   }) : super(key: key) {
     _heightPercentage = heightPercentage;
     _canEdit = canEdit;
+    _zoomLevel = zoomLevel;
   }
 
   /// Height percentage of the pdf page.
@@ -126,6 +132,8 @@ class CustomAnnotationView extends StatefulWidget with AnnotationView {
 
   /// Whether the annotation can be edited.
   late final bool _canEdit;
+
+  late final double _zoomLevel;
 
   /// Called when annotation is tapped
   final VoidCallback? onTap;
@@ -158,11 +166,17 @@ class CustomAnnotationView extends StatefulWidget with AnnotationView {
 class _CustomAnnotationViewState extends State<CustomAnnotationView> {
   @override
   Widget build(BuildContext context) {
-    // Calculate how much to scale the content to fit within the widget's bounds
-    final scaleFactor = 1.0 / widget._heightPercentage;
+    // your old page‐scale
+    final pageScale = 1.0 / widget._heightPercentage;
+
+    // the real PDF zoom you passed in
+    final zoomFactor = widget._zoomLevel;
+
+    // combine them to size your icon
+    final combinedScale = pageScale / zoomFactor;
 
     return Transform.scale(
-      scale: scaleFactor,
+      scale: widget.annotation.canScale ? combinedScale : pageScale,
       child: RawGestureDetector(
         behavior: HitTestBehavior.translucent,
         gestures: {
