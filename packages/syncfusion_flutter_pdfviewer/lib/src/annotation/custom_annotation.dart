@@ -172,8 +172,8 @@ class _CustomAnnotationViewState extends State<CustomAnnotationView> {
     // the real PDF zoom you passed in
     final zoomFactor = widget._zoomLevel;
 
-    // combine them to size your icon
-    final combinedScale = pageScale / zoomFactor;
+    // combine them to size your icon, reducing the impact of high zoom levels
+    final combinedScale = pageScale / math.pow(zoomFactor, 2 / 3);
 
     return Transform.scale(
       scale: widget.annotation.canScale ? combinedScale : pageScale,
