@@ -169,7 +169,7 @@ class _CustomAnnotationViewState extends State<CustomAnnotationView> {
     final zoomFactor = 1.0 / widget._zoomLevel;
 
     return Transform.scale(
-      scale: zoomFactor,
+      scale: widget.annotation.canScale ? zoomFactor : 1,
       child: RawGestureDetector(
         behavior: HitTestBehavior.translucent,
         gestures: {
