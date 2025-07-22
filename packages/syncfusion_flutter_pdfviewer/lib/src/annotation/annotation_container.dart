@@ -135,6 +135,17 @@ class _AnnotationContainerState extends State<AnnotationContainer> {
           );
         },
       );
+    } else if (annotation is CustomAnnotation) {
+      return Positioned(
+        left: annotation.uiBounds.left / widget.heightPercentage,
+        top: annotation.uiBounds.top / widget.heightPercentage,
+        child: ListenableBuilder(
+          listenable: annotation,
+          builder: (BuildContext context, Widget? child) {
+            return _getAnnotationView(annotation);
+          },
+        ),
+      );
     } else {
       return Positioned(
         left: annotation.uiBounds.left / widget.heightPercentage,

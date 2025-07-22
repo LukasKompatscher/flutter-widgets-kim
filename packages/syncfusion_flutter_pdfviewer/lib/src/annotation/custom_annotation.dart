@@ -166,17 +166,10 @@ class CustomAnnotationView extends StatefulWidget with AnnotationView {
 class _CustomAnnotationViewState extends State<CustomAnnotationView> {
   @override
   Widget build(BuildContext context) {
-    // your old page‐scale
-    final pageScale = 1.0 / widget._heightPercentage;
-
-    // the real PDF zoom you passed in
-    final zoomFactor = widget._zoomLevel;
-
-    // combine them to size your icon, reducing the impact of high zoom levels
-    final combinedScale = pageScale / math.pow(zoomFactor, 2 / 3);
+    final zoomFactor = 1.0 / widget._zoomLevel;
 
     return Transform.scale(
-      scale: widget.annotation.canScale ? combinedScale : pageScale,
+      scale: zoomFactor,
       child: RawGestureDetector(
         behavior: HitTestBehavior.translucent,
         gestures: {
