@@ -4410,7 +4410,7 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
         _tileTimer = null;
       }
       _checkVisiblePages();
-      _tileTimer ??= Timer(Durations.medium4, () async {
+      _tileTimer ??= Timer(const Duration(milliseconds: 10), () async {
         _checkVisiblePages();
         final double zoomLevel = _transformationController.value[0];
         if (_pageLayoutMode == PdfPageLayoutMode.continuous) {
@@ -5590,6 +5590,9 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
     } else if (property == 'saveDocument') {
       _pdfViewerController._savedDocumentBytes = _saveDocument();
     } else if (property == 'zoomLevel') {
+      if (_pdfViewerController.zoomLevel != _previousTiledZoomLevel) {
+        _getTileImage(); // Immediate call without timer
+      }
       if (_pdfViewerController.zoomLevel > widget.maxZoomLevel) {
         _pdfViewerController.zoomLevel = widget.maxZoomLevel;
       } else if (_pdfViewerController.zoomLevel < _minScale) {
